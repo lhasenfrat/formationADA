@@ -33,8 +33,9 @@ def update_isaac():
         isaac_y += isaac_velocite
 
 def draw():
-    pygame.draw.rect(win, (0, 0, 255), (isaac_x, isaac_y, isaac_size[0], isaac_size[1]))
-    pygame.draw.rect(win, (0, 0, 255), (baddy_x, baddy_y, baddy_size[0], baddy_size[1]))
+    pass
+    #pygame.draw.rect(win, (0, 0, 255), (isaac_x, isaac_y, isaac_size[0], isaac_size[1]))
+    #pygame.draw.rect(win, (0, 0, 255), (baddy_x, baddy_y, baddy_size[0], baddy_size[1]))
 
 def update_baddy():
     global baddy_x, baddy_y
@@ -49,24 +50,33 @@ def update_baddy():
         
 isaac_x=100
 isaac_y=100
-isaac_size=[20,20]
+isaac_size=[38*2,47*2]
 isaac_velocite=4
 
 baddy_x=300
 baddy_y=300
-baddy_size=[30,30]
+baddy_size=[200,200]
 baddy_velocite=3
 
 compteur = 0 
 
 def drawGame():
-    win.fill((0, 0, 0))
+    win.blit(background, (0,0))
+    win.blit(character, (isaac_x, isaac_y))
+    win.blit(baddy, (baddy_x, baddy_y))
     draw()
     pygame.display.update()
     return 0
 
-#character = pygame.image.load("isaac.png")
-#win.blit(character,(50,50)) # These are the X and Y coordinates
+character = pygame.image.load("isaac.png")
+character = pygame.transform.scale(character, (isaac_size[0], isaac_size[1]))
+background = pygame.image.load("background.jpg")
+baddy = pygame.image.load("monstro.png")
+baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
+
+
+win.blit(character,(50,50)) # These are the X and Y coordinates
+
 drawGame()
 
 
