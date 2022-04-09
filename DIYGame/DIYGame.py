@@ -4,95 +4,112 @@ import pygame
 
 pygame.init()
 
-win = pygame.display.set_mode((1000, 1000))
+#paramètre la fenêtre 
+win = pygame.display.set_mode((1000, 500))
 pygame.display.set_caption("Squarey")
 
-run = True
+#le décor 
+background = pygame.image.load("background.jpg")
 
-def collision() -> bool:
-    if not(isaac_x + isaac_size[0] < baddy_x or baddy_x + baddy_size[0] < isaac_x
-            or isaac_y + isaac_size[1] < baddy_y or baddy_y + baddy_size[1] < isaac_y):
-        return True
-    else:
-        return False
-    
-def update_isaac():
-    global isaac_x, isaac_y
-    keys = pygame.key.get_pressed() #liste des inputs
-    if keys[pygame.K_LEFT]:
-        isaac_x -= isaac_velocite
+#toutes les variables qui gèrent le personnage
+personnage = pygame.image.load("isaac.png")
 
-    if keys[pygame.K_RIGHT]:
-        isaac_x += isaac_velocite
-        #faire aller le personnage à droite
+personnage_x=100
+personnage_y=100
+personnage_size=[personnage.get_width()/4, personnage.get_height()/4]
+personnage_velocite=6
 
-    if keys[pygame.K_UP]:
-        isaac_y -= isaac_velocite
+personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_size[1]))
 
-    if keys[pygame.K_DOWN]:
-        isaac_y += isaac_velocite
-
-def draw():
-    pass
-    #pygame.draw.rect(win, (0, 0, 255), (isaac_x, isaac_y, isaac_size[0], isaac_size[1]))
-    #pygame.draw.rect(win, (0, 0, 255), (baddy_x, baddy_y, baddy_size[0], baddy_size[1]))
-
-def update_baddy():
-    global baddy_x, baddy_y
-    if baddy_x < isaac_x - 10:
-        baddy_x = baddy_x + baddy_velocite
-    elif baddy_x > isaac_x + 10:
-        baddy_x = baddy_x - baddy_velocite
-    elif baddy_y < isaac_y - 10:
-        baddy_y = baddy_y + baddy_velocite
-    elif baddy_y > isaac_y + 10:
-        baddy_y = baddy_y - baddy_velocite
-        
-isaac_x=100
-isaac_y=100
-isaac_size=[38*2,47*2]
-isaac_velocite=4
+#toutes les variables qui gèrent l'ennemi
+baddy = pygame.image.load("monstro.png")
 
 baddy_x=300
 baddy_y=300
-baddy_size=[200,200]
+baddy_size=[baddy.get_width()/2, baddy.get_height()/2]
 baddy_velocite=3
 
-compteur = 0 
+baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
 
+#la porte
+
+
+
+#la clé
+
+
+
+
+
+#renvoie True si le personnage touche l'ennemi (alors le jeu doit s'arrêter)
+def collision() -> bool:
+    if not(personnage_x + personnage_size[0] < baddy_x or baddy_x + baddy_size[0] < personnage_x
+            or personnage_y + personnage_size[1] < baddy_y or baddy_y + baddy_size[1] < personnage_y):
+        return True
+    else:
+        return False
+
+
+#met à jour la position du personnage
+def update_personnage():
+    global personnage_x, personnage_y
+    keys = pygame.key.get_pressed() #liste des inputs
+    if keys[pygame.K_LEFT]:
+        personnage_x -= personnage_velocite
+
+    if keys[pygame.K_RIGHT]:
+        personnage_x += personnage_velocite
+        #faire aller le personnage à droite
+
+    if keys[pygame.K_UP]:
+        personnage_y -= personnage_velocite
+
+    if keys[pygame.K_DOWN]:
+        personnage_y += personnage_velocite
+
+
+#met à jour la position de l'ennemi
+def update_baddy():
+    global baddy_x, baddy_y
+    if baddy_x < personnage_x - 10:
+        baddy_x = baddy_x + baddy_velocite
+    elif baddy_x > personnage_x + 10:
+        baddy_x = baddy_x - baddy_velocite
+    elif baddy_y < personnage_y - 10:
+        baddy_y = baddy_y + baddy_velocite
+    elif baddy_y > personnage_y + 10:
+        baddy_y = baddy_y - baddy_velocite
+
+
+#met à jour la fenêtre de jeu
 def drawGame():
+    #on affiche tous les éléments (personnage, méchant, arrière-plan, ect...)
     win.blit(background, (0,0))
-    win.blit(character, (isaac_x, isaac_y))
+    win.blit(personnage, (personnage_x, personnage_y))
     win.blit(baddy, (baddy_x, baddy_y))
-    draw()
+
+    #on met à jour la fenêtre
     pygame.display.update()
     return 0
 
-character = pygame.image.load("isaac.png")
-character = pygame.transform.scale(character, (isaac_size[0], isaac_size[1]))
-background = pygame.image.load("background.jpg")
-baddy = pygame.image.load("monstro.png")
-baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
 
-
-win.blit(character,(50,50)) # These are the X and Y coordinates
-
-drawGame()
-
-
+#on fait une boucle qui met à jour la fenêtre de jeu toutes les 16ms et qui s'arrête quand on ferme la fenêtre ou quand on perd 
+# (quand le personnage touche l'ennemi)
+run = True
 while run:
     pygame.time.delay(16)
 
+    #on met à jour la position des éléments qui bougent, puis on met à jour la fenêtre
+    update_personnage()
+    update_baddy()
     drawGame()
     
+    #si on ferme la fenêtre, le jeu s'arrête
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    
-    update_isaac()
-    update_baddy()
-
+    #si jamais le personnage touche le méchant, le jeu s'arrête
     if collision():
         run = False
 
