@@ -11,7 +11,9 @@ pygame.display.set_caption("Squarey")
 #le décor 
 background = pygame.image.load("background.jpg")
 
+
 #toutes les variables qui gèrent le personnage
+##########################################################################
 personnage = pygame.image.load("isaac.png")
 
 personnage_x=100
@@ -20,8 +22,11 @@ personnage_size=[personnage.get_width()/4, personnage.get_height()/4]
 personnage_velocite=6
 
 personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_size[1]))
+##########################################################################
+
 
 #toutes les variables qui gèrent l'ennemi
+##########################################################################
 baddy = pygame.image.load("monstro.png")
 
 baddy_x=300
@@ -30,24 +35,65 @@ baddy_size=[baddy.get_width()/2, baddy.get_height()/2]
 baddy_velocite=3
 
 baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
+##########################################################################
 
-#la porte
+#toutes les variables qui gèrent la porte
+##########################################################################
+porte_ouverte = False
+porte = pygame.image.load("porte_fermee.png")
+
+porte_x=700
+porte_y=100
+porte_size=[porte.get_width()/2, porte.get_height()/2]
+
+porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
+##########################################################################
 
 
+#toutes les variables qui gèrent la clé
+##########################################################################
+cle_obtenue = False
+cle = pygame.image.load("cle.png")
 
-#la clé
+cle_x=500
+cle_y=100
+cle_size=[cle.get_width()/4, cle.get_height()/4]
+
+cle = pygame.transform.scale(cle, (cle_size[0], cle_size[1]))
+##########################################################################
 
 
-
-
-
+#toutes les fonctions de collisions 
+##########################################################################
 #renvoie True si le personnage touche l'ennemi (alors le jeu doit s'arrêter)
-def collision() -> bool:
+def collision_personnage_ennemi() -> bool:
     if not(personnage_x + personnage_size[0] < baddy_x or baddy_x + baddy_size[0] < personnage_x
             or personnage_y + personnage_size[1] < baddy_y or baddy_y + baddy_size[1] < personnage_y):
         return True
     else:
         return False
+
+#Si le personnage touche la cle, la variable cle_obtenue passe à True et la porte s'ouvre
+def collision_personnage_cle():
+    global cle_obtenue, porte_ouverte, porte
+    if not(personnage_x + personnage_size[0] < cle_x or cle_x + cle_size[0] < personnage_x
+            or personnage_y + personnage_size[1] < cle_y or cle_y + cle_size[1] < personnage_y):
+        cle_obtenue = True
+        porte_ouverte = True
+
+        #remplace l'image de la porte fermee par l'image de la porte ouverte
+        porte = porte = pygame.image.load("porte_ouverte.png")
+        porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
+
+
+#Si le personnage touche la porte, on a gag,é et la partie s'arrête
+def collision_personnage_porte():
+    global cle_obtenue, porte_ouverte, porte
+    if not(personnage_x + personnage_size[0] < porte_x or porte_x + porte_size[0] < personnage_x
+            or personnage_y + personnage_size[1] < porte_y or porte_y + porte_size[1] < personnage_y):
+        run = False
+
+##########################################################################
 
 
 #met à jour la position du personnage
@@ -87,6 +133,11 @@ def drawGame():
     win.blit(background, (0,0))
     win.blit(personnage, (personnage_x, personnage_y))
     win.blit(baddy, (baddy_x, baddy_y))
+    win.blit(porte, (porte_x, porte_y))
+
+    
+    if not(cle_obtenue):
+        win.blit(cle, (cle_x, cle_y))
 
     #on met à jour la fenêtre
     pygame.display.update()
@@ -110,8 +161,12 @@ while run:
             run = False
 
     #si jamais le personnage touche le méchant, le jeu s'arrête
-    if collision():
+    if collision_personnage_ennemi():
         run = False
+    
+    collision_personnage_cle()
+
+    collision_personnage_porte()
 
 pygame.quit()
 
