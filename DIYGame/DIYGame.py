@@ -1,23 +1,29 @@
 from operator import truediv
+import re
 from typing import Tuple
-import pygame
+import pygame,thorpy
 
 pygame.init()
 
-#paramètre la fenêtre 
-win = pygame.display.set_mode((1000, 500))
+#paramètre la fenêtre
+win_size_x=1000
+win_size_y=500 
+win = pygame.display.set_mode((win_size_x, win_size_y))
 pygame.display.set_caption("Squarey")
 
 #le décor 
-background = pygame.image.load("background.jpg")
+background = pygame.image.load("DIYGame/background.jpg")
 
 
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("isaac.png")
+personnage = pygame.image.load("DIYGame/isaac.png")
 
-personnage_x=100
-personnage_y=100
+
+base_personnage_x=100
+base_personnage_y=100
+personnage_x=base_personnage_x
+personnage_y=base_personnage_y
 personnage_size=[personnage.get_width()/4, personnage.get_height()/4]
 personnage_velocite=6
 
@@ -27,10 +33,12 @@ personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_
 
 #toutes les variables qui gèrent l'ennemi
 ##########################################################################
-baddy = pygame.image.load("monstro.png")
+baddy = pygame.image.load("DIYGame/monstro.png")
 
-baddy_x=300
-baddy_y=300
+base_baddy_x=300
+base_baddy_y=300
+baddy_x=base_baddy_x
+baddy_y=base_baddy_y
 baddy_size=[baddy.get_width()/2, baddy.get_height()/2]
 baddy_velocite=3
 
@@ -40,10 +48,12 @@ baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
 #toutes les variables qui gèrent la porte
 ##########################################################################
 porte_ouverte = False
-porte = pygame.image.load("porte_fermee.png")
+porte = pygame.image.load("DIYGame/porte_fermee.png")
 
-porte_x=700
-porte_y=100
+base_porte_x=700
+base_porte_y=100
+porte_x=base_porte_x
+porte_y=base_porte_y
 porte_size=[porte.get_width()/2, porte.get_height()/2]
 
 porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
@@ -53,10 +63,12 @@ porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 #toutes les variables qui gèrent la clé
 ##########################################################################
 cle_obtenue = False
-cle = pygame.image.load("cle.png")
+cle = pygame.image.load("DIYGame/cle.png")
 
-cle_x=500
-cle_y=100
+base_cle_x=500
+base_cle_y=100
+cle_x=base_cle_x
+cle_y=base_cle_y
 cle_size=[cle.get_width()/4, cle.get_height()/4]
 
 cle = pygame.transform.scale(cle, (cle_size[0], cle_size[1]))
@@ -82,7 +94,7 @@ def collision_personnage_cle():
         porte_ouverte = True
 
         #remplace l'image de la porte fermee par l'image de la porte ouverte
-        porte = porte = pygame.image.load("porte_ouverte.png")
+        porte = porte = pygame.image.load("DIYGame/porte_ouverte.png")
         porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 
 
@@ -91,10 +103,23 @@ def collision_personnage_porte():
     global cle_obtenue, porte_ouverte, porte
     if not(personnage_x + personnage_size[0] < porte_x or porte_x + porte_size[0] < personnage_x
             or personnage_y + personnage_size[1] < porte_y or porte_y + porte_size[1] < personnage_y):
-        run = False
+        return True
+    return False
 
 ##########################################################################
 
+#remet les variables dynamiques à leurs états d'origine
+def reload_positions():
+    global personnage_x,personnage_y,baddy_x,baddy_y,porte_x,porte_y, cle_x,cle_y,cle_obtenue
+    personnage_x=base_personnage_x
+    personnage_y=base_personnage_y
+    baddy_x=base_baddy_x
+    baddy_y=base_baddy_y
+    porte_x=base_porte_x
+    porte_y=base_porte_y
+    cle_x=base_cle_x
+    cle_y=base_cle_y
+    cle_obtenue=False
 
 #met à jour la position du personnage
 def update_personnage():
@@ -143,30 +168,83 @@ def drawGame():
     pygame.display.update()
     return 0
 
+#Affichage des menus
+##########################################################################
+def restart():
+    e_quit = thorpy.make_button("Quit",func=thorpy.functions.quit_menu_func)
+    e_restart = thorpy.make_button("Restart", func=play)
+    e_text = thorpy.make_text("You died",22,(255,0,0))
+    e_background = thorpy.Background( color=(200, 200, 255),elements=[e_text,e_quit,e_restart])
+    thorpy.store(e_background, gap=20) 
+    reload_positions()
+    thorpy.functions.quit_menu_func() #quit the current menu
+    menu = thorpy.Menu(e_background) #create and launch the menu
+    menu.play()
+
+def win_screen():
+    e_quit = thorpy.make_button("Quit",func=thorpy.functions.quit_menu_func)
+    e_restart = thorpy.make_button("Restart", func=play)
+    e_text = thorpy.make_text("You won !",40,(255,255,0))
+    e_background = thorpy.Background( color=(200, 200, 255),elements=[e_text,e_quit,e_restart])
+    thorpy.store(e_background, gap=20) 
+    reload_positions()
+    thorpy.functions.quit_menu_func() #quit the current menu
+    menu = thorpy.Menu(e_background) #create and launch the menu
+    menu.play()
+
+def init():
+    e_quit = thorpy.make_button("Quit",func=thorpy.functions.quit_menu_func)
+    e_restart = thorpy.make_button("Start", func=play)
+    e_text = thorpy.make_text("Hello",22,(0,255,0))
+    e_background = thorpy.Background( color=(200, 200, 255),elements=[e_text,e_quit,e_restart])
+    thorpy.store(e_background, gap=20) 
+    menu = thorpy.Menu(e_background) #create and launch the menu
+    menu.play()
+
+
+##########################################################################
+
+#Boucle principale qui change l'état du jeu toute les 16ms
+##########################################################################
+def play():
+    run = True
+    victory=False
+    while run:
+        pygame.time.delay(16)
+
+        #on met à jour la position des éléments qui bougent, puis on met à jour la fenêtre
+        update_personnage()
+        update_baddy()
+        drawGame()
+        
+        #si on ferme la fenêtre, le jeu s'arrête
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        #si jamais le personnage touche le méchant, le jeu s'arrête
+        if collision_personnage_ennemi():
+            run = False
+        
+        collision_personnage_cle()
+
+        if cle_obtenue and collision_personnage_porte() :
+            run=False
+            victory=True
+    if not victory:
+        restart()
+    else:
+        win_screen()
+##########################################################################
+
 
 #on fait une boucle qui met à jour la fenêtre de jeu toutes les 16ms et qui s'arrête quand on ferme la fenêtre ou quand on perd 
 # (quand le personnage touche l'ennemi)
-run = True
-while run:
-    pygame.time.delay(16)
 
-    #on met à jour la position des éléments qui bougent, puis on met à jour la fenêtre
-    update_personnage()
-    update_baddy()
-    drawGame()
-    
-    #si on ferme la fenêtre, le jeu s'arrête
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+application = thorpy.Application(size=(win_size_x, win_size_y), caption="Guess the number")
+init()
+application.quit()
 
-    #si jamais le personnage touche le méchant, le jeu s'arrête
-    if collision_personnage_ennemi():
-        run = False
-    
-    collision_personnage_cle()
-
-    collision_personnage_porte()
 
 pygame.quit()
 
