@@ -12,12 +12,12 @@ win = pygame.display.set_mode((win_size_x, win_size_y))
 pygame.display.set_caption("Squarey")
 
 #le décor 
-background = pygame.image.load("DIYGame/background.jpg")
+background = pygame.image.load("background.jpg")
 
 
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("DIYGame/isaac.png")
+personnage = pygame.image.load("isaac.png") #on charge une image associée à notre personnage
 
 
 base_personnage_x=100
@@ -33,7 +33,7 @@ personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_
 
 #toutes les variables qui gèrent l'ennemi
 ##########################################################################
-baddy = pygame.image.load("DIYGame/monstro.png")
+baddy = pygame.image.load("monstro.png")
 
 base_baddy_x=300
 base_baddy_y=300
@@ -48,7 +48,7 @@ baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
 #toutes les variables qui gèrent la porte
 ##########################################################################
 porte_ouverte = False
-porte = pygame.image.load("DIYGame/porte_fermee.png")
+porte = pygame.image.load("porte_fermee.png")
 
 base_porte_x=700
 base_porte_y=100
@@ -63,7 +63,7 @@ porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 #toutes les variables qui gèrent la clé
 ##########################################################################
 cle_obtenue = False
-cle = pygame.image.load("DIYGame/cle.png")
+cle = pygame.image.load("cle.png")
 
 base_cle_x=500
 base_cle_y=100
@@ -94,7 +94,7 @@ def collision_personnage_cle():
         porte_ouverte = True
 
         #remplace l'image de la porte fermee par l'image de la porte ouverte
-        porte = porte = pygame.image.load("DIYGame/porte_ouverte.png")
+        porte = porte = pygame.image.load("porte_ouverte.png")
         porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 
 
@@ -110,7 +110,7 @@ def collision_personnage_porte():
 
 #remet les variables dynamiques à leurs états d'origine
 def reload_positions():
-    global personnage_x,personnage_y,baddy_x,baddy_y,porte_x,porte_y, cle_x,cle_y,cle_obtenue
+    global personnage_x,personnage_y,baddy_x,baddy_y,porte_x,porte_y, cle_x,cle_y,cle_obtenue, porte_ouverte, porte
     personnage_x=base_personnage_x
     personnage_y=base_personnage_y
     baddy_x=base_baddy_x
@@ -120,6 +120,10 @@ def reload_positions():
     cle_x=base_cle_x
     cle_y=base_cle_y
     cle_obtenue=False
+    porte_ouverte = False
+    porte = pygame.image.load("porte_fermee.png")
+    porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
+ 
 
 #met à jour la position du personnage
 def update_personnage():
@@ -154,6 +158,9 @@ def update_baddy():
 
 #met à jour la fenêtre de jeu
 def drawGame():
+    update_personnage()
+    update_baddy()
+
     #on affiche tous les éléments (personnage, méchant, arrière-plan, ect...)
     win.blit(background, (0,0))
     win.blit(personnage, (personnage_x, personnage_y))
@@ -212,9 +219,7 @@ def play():
     while run:
         pygame.time.delay(16)
 
-        #on met à jour la position des éléments qui bougent, puis on met à jour la fenêtre
-        update_personnage()
-        update_baddy()
+        #on met à jour la fenêtre
         drawGame()
         
         #si on ferme la fenêtre, le jeu s'arrête
