@@ -12,12 +12,12 @@ win = pygame.display.set_mode((win_size_x, win_size_y))
 pygame.display.set_caption("Squarey")
 
 #le décor 
-background = pygame.image.load("DIYGame/background.jpg")
+background = pygame.image.load("Assets/tilesetsADA/4_catacombes.png")
 
 
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("DIYGame/isaac.png")
+personnage = pygame.image.load("Assets/assetsADA/isaac/isaac.png")
 
 
 base_personnage_x=100
@@ -33,7 +33,7 @@ personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_
 
 #toutes les variables qui gèrent l'ennemi
 ##########################################################################
-baddy = pygame.image.load("DIYGame/monstro.png")
+baddy = pygame.image.load("monstro.png")
 
 base_baddy_x=300
 base_baddy_y=300
@@ -48,7 +48,7 @@ baddy = pygame.transform.scale(baddy, (baddy_size[0], baddy_size[1]))
 #toutes les variables qui gèrent la porte
 ##########################################################################
 porte_ouverte = False
-porte = pygame.image.load("DIYGame/porte_fermee.png")
+porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_ouverte.png")
 
 base_porte_x=700
 base_porte_y=100
@@ -63,7 +63,7 @@ porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 #toutes les variables qui gèrent la clé
 ##########################################################################
 cle_obtenue = False
-cle = pygame.image.load("DIYGame/cle.png")
+cle = pygame.image.load("Assets/assetsADA/key.png")
 
 base_cle_x=500
 base_cle_y=100
@@ -94,7 +94,7 @@ def collision_personnage_cle():
         porte_ouverte = True
 
         #remplace l'image de la porte fermee par l'image de la porte ouverte
-        porte = porte = pygame.image.load("DIYGame/porte_ouverte.png")
+        porte = porte = pygame.image.load("DIYGame/assetsADA/portes/porte_grille_fermee.png")
         porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 
 
