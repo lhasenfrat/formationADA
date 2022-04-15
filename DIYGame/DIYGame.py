@@ -5,26 +5,28 @@ import pygame,thorpy
 
 pygame.init()
 
-#paramètre la fenêtre
-win_size_x=1000
-win_size_y=500 
-win = pygame.display.set_mode((win_size_x, win_size_y))
-pygame.display.set_caption("Squarey")
 
 #le décor 
-background = pygame.image.load("background.jpg")
+background = pygame.image.load("Assets/tilesetsADA/4_catacombes.png")
+
+
+#paramètre la fenêtre
+win_size_x=background.get_width()
+win_size_y=background.get_height()
+win = pygame.display.set_mode((win_size_x, win_size_y))
+pygame.display.set_caption("Squarey")
 
 
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("isaac.png") #on charge une image associée à notre personnage
+personnage = pygame.image.load("Assets/assetsADA/isaac/isaac.png")
 
 
 base_personnage_x=100
 base_personnage_y=100
 personnage_x=base_personnage_x
 personnage_y=base_personnage_y
-personnage_size=[personnage.get_width()/4, personnage.get_height()/4]
+personnage_size=[personnage.get_width()/2, personnage.get_height()/2]
 personnage_vitesse=6
 
 personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_size[1]))
@@ -48,13 +50,13 @@ mechant = pygame.transform.scale(mechant, (mechant_size[0], mechant_size[1]))
 #toutes les variables qui gèrent la porte
 ##########################################################################
 porte_ouverte = False
-porte = pygame.image.load("porte_fermee.png")
+porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_fermee.png")
 
-base_porte_x=700
-base_porte_y=100
+base_porte_x=430
+base_porte_y=10
 porte_x=base_porte_x
 porte_y=base_porte_y
-porte_size=[porte.get_width()/2, porte.get_height()/2]
+porte_size=[porte.get_width(), porte.get_height()]
 
 porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 ##########################################################################
@@ -63,13 +65,13 @@ porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 #toutes les variables qui gèrent la clé
 ##########################################################################
 cle_obtenue = False
-cle = pygame.image.load("cle.png")
+cle = pygame.image.load("Assets/assetsADA/key.png")
 
 base_cle_x=500
-base_cle_y=100
+base_cle_y=500
 cle_x=base_cle_x
 cle_y=base_cle_y
-cle_size=[cle.get_width()/4, cle.get_height()/4]
+cle_size=[cle.get_width()/2, cle.get_height()/2]
 
 cle = pygame.transform.scale(cle, (cle_size[0], cle_size[1]))
 ##########################################################################
@@ -95,7 +97,7 @@ def collision_personnage_cle():
         porte_ouverte = True
 
         #remplace l'image de la porte fermee par l'image de la porte ouverte
-        porte = porte = pygame.image.load("porte_ouverte.png")
+        porte = porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_ouverte.png")
         porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 
 
@@ -118,11 +120,9 @@ def reload_positions():
     porte_y=base_porte_y
     cle_x=base_cle_x
     cle_y=base_cle_y
-    cle_obtenue = False
+    cle_obtenue=False
     porte_ouverte = False
-    porte = pygame.image.load("porte_fermee.png")
-    porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
- 
+    porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_fermee.png")
 
 #met à jour la position du personnage
 def update_personnage():
