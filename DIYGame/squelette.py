@@ -100,14 +100,14 @@ def update_personnage():
     if keys[pygame.K_RIGHT]:
         pass #à remplacer par votre code
         #insérer votre code pour que le personnage ne sorte pas de l'arène
-
-    if keys[pygame.K_UP]:
+'''
+    if keys[]:
         pass #à remplacer par votre code
         #insérer votre code pour que le personnage ne sorte pas de l'arène
 
-    if keys[pygame.K_DOWN]:
+    if keys[]:
         pass #à remplacer par votre code
-        #insérer votre code pour que le personnage ne sorte pas de l'arène
+        #insérer votre code pour que le personnage ne sorte pas de l'arène'''
 
 #met à jour la position de l'ennemi
 def update_mechant():
@@ -121,21 +121,25 @@ def drawGame():
 
     #on affiche tous les éléments (personnage, méchant, arrière-plan, cle, ect...)
     win.blit(background, (0,0))
-    win.blit(personnage, (personnage_x, personnage_y))
-    #win.blit(mechant, (mechant_x, mechant_y))
     win.blit(porte, (porte_x, porte_y))
-
-    #if not(cle_obtenue):
-    #    win.blit(cle, (cle_x, cle_y))
+    win.blit(personnage, (personnage_x, personnage_y))
 
     #on met à jour la fenêtre
     pygame.display.update()
     return 0
 
-#Affichage des menus
+#Affichage des menus : NE PAS TOUCHER
 ##########################################################################
 def ecran_restart(): # quand le personnage est mort
-    pass #à remplacer par votre code
+    e_quit = thorpy.make_button("Quitter",func=thorpy.functions.quit_menu_func)
+    e_restart = thorpy.make_button("Recommencer ", func=play)
+    e_text = thorpy.make_text("Vous êtes morts :((((((",40,(255,255,255))
+    e_background = thorpy.Background( color=(0, 0, 0),elements=[e_text,e_quit,e_restart])
+    thorpy.store(e_background, gap=20) 
+    reload_positions()
+    thorpy.functions.quit_menu_func() #Quitte le menu
+    menu = thorpy.Menu(e_background) #Crée et lance le menu
+    menu.play()
 
 
 def ecran_victoire():
@@ -169,6 +173,7 @@ def init():
 def play():
     run = True
     victory=False
+
     while run:
         pygame.time.delay(16)
 
@@ -180,11 +185,10 @@ def play():
             if event.type == pygame.QUIT:
                 run = False
 
-        #si jamais le personnage touche le méchant, le jeu s'arrête
+        if collision_personnage_porte() :
+                run=False
+                victory=True
 
-    if collision_personnage_porte() :
-            run=False
-            victory=True
     if not victory:
         ecran_restart()
     else:
@@ -194,8 +198,7 @@ def play():
 
 application = thorpy.Application(size=(win_size_x, win_size_y), caption="ADA Game")
 init()
+
 application.quit()
-
-
 pygame.quit()
 

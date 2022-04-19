@@ -1,6 +1,4 @@
 from operator import truediv
-import re
-from typing import Tuple
 import pygame,thorpy
 
 pygame.init()
@@ -174,7 +172,7 @@ def drawGame():
 
 #Affichage des menus
 ##########################################################################
-def ecran_restart():
+def restart():
     e_quit = thorpy.make_button("Quitter",func=thorpy.functions.quit_menu_func)
     e_restart = thorpy.make_button("Recommencer", func=play)
     e_text = thorpy.make_text("Vous êtes mort :(((((",22,(255,255,255))
@@ -185,7 +183,7 @@ def ecran_restart():
     menu = thorpy.Menu(e_background) #Crée et lance le menu
     menu.play()
 
-def ecran_victoire():
+def win_screen():
     e_quit = thorpy.make_button("Quitter",func=thorpy.functions.quit_menu_func)
     e_restart = thorpy.make_button("Recommencer ", func=play)
     e_text = thorpy.make_text("Vous avez gagné ! :DDDD",40,(255,255,255))
@@ -236,10 +234,11 @@ def play():
         if cle_obtenue and collision_personnage_porte() :
             run=False
             victory=True
+
     if not victory:
-        ecran_restart()
+        restart()
     else:
-        ecran_victoire()
+        win_screen()
 ##########################################################################
 
 
