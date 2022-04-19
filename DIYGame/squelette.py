@@ -2,26 +2,25 @@ import pygame,thorpy
 
 pygame.init()
 
+#le décor 
+background = pygame.image.load("Assets/tilesetsADA/4_catacombes.png")
+
 #paramètre la fenêtre
-win_size_x=1000
-win_size_y=500 
+win_size_x=background.get_width()
+win_size_y=background.get_height()
 win = pygame.display.set_mode((win_size_x, win_size_y))
 pygame.display.set_caption("Squarey")
 
-#le décor 
-background = pygame.image.load("background.jpg")
-
-
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("isaac.png") #on charge une image associée à notre personnage
+personnage = pygame.image.load("Assets/assetsADA/personnages/bonhommes_magiques/random_dude.png")
 
 
 base_personnage_x=100
 base_personnage_y=100
 personnage_x=base_personnage_x
 personnage_y=base_personnage_y
-personnage_size=[personnage.get_width()/4, personnage.get_height()/4]
+personnage_size=[personnage.get_width(), personnage.get_height()]
 personnage_vitesse=6
 
 personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_size[1]))
@@ -31,13 +30,13 @@ personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_
 #toutes les variables qui gèrent la porte
 ##########################################################################
 porte_ouverte = False
-porte = pygame.image.load("porte_fermee.png")
+porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_fermee.png")
 
-base_porte_x=700
-base_porte_y=100
+base_porte_x=430
+base_porte_y=10
 porte_x=base_porte_x
 porte_y=base_porte_y
-porte_size=[porte.get_width()/2, porte.get_height()/2]
+porte_size=[porte.get_width(), porte.get_height()]
 
 porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 ##########################################################################
@@ -76,7 +75,7 @@ def collision_personnage_porte():
 ##########################################################################
 #remet les variables dynamiques à leurs états d'origine quand on appuie sur Recommencer
 def reload_positions():
-    global personnage_x,personnage_y,mechant_x,mechant_y,porte_x,porte_y, cle_x,cle_y,cle_obtenue, porte_ouverte, porte
+    global personnage_x,personnage_y,porte_x,porte_y,cle_obtenue, porte_ouverte, porte
     personnage_x=base_personnage_x
     personnage_y=base_personnage_y
 
@@ -85,7 +84,7 @@ def reload_positions():
 
     cle_obtenue = False
     porte_ouverte = False
-    porte = pygame.image.load("porte_fermee.png")
+    porte = pygame.image.load("Assets/assetsADA/portes/porte_grille_fermee.png")
     porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
  
 
@@ -173,7 +172,7 @@ def init():
 def play():
     run = True
     victory=False
-
+    killed=False
     while run:
         pygame.time.delay(16)
 
@@ -184,11 +183,14 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                killed=True
 
         if collision_personnage_porte() :
                 run=False
                 victory=True
-
+    if killed:
+        thorpy.functions.quit_menu_func()
+        return
     if not victory:
         ecran_restart()
     else:

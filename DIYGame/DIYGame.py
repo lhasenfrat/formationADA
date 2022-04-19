@@ -17,7 +17,7 @@ pygame.display.set_caption("Squarey")
 
 #toutes les variables qui gèrent le personnage
 ##########################################################################
-personnage = pygame.image.load("Assets/assetsADA/isaac/isaac.png")
+personnage = pygame.image.load("Assets/assetsADA/personnages/isaac.png")
 
 
 base_personnage_x=100
@@ -33,7 +33,7 @@ personnage = pygame.transform.scale(personnage, (personnage_size[0], personnage_
 
 #toutes les variables qui gèrent l'ennemi
 ##########################################################################
-mechant = pygame.image.load("monstro.png")
+mechant = pygame.image.load("Assets/assetsADA/personnages/mechants_squelettes/Skeleton_King.png")
 
 base_mechant_x=300
 base_mechant_y=300
@@ -63,7 +63,7 @@ porte = pygame.transform.scale(porte, (porte_size[0], porte_size[1]))
 #toutes les variables qui gèrent la clé
 ##########################################################################
 cle_obtenue = False
-cle = pygame.image.load("Assets/assetsADA/key.png")
+cle = pygame.image.load("Assets/assetsADA/clefs/key.png")
 
 base_cle_x=500
 base_cle_y=500
@@ -214,6 +214,7 @@ def init():
 def play():
     run = True
     victory=False
+    killed=False
     while run:
         pygame.time.delay(16)
 
@@ -224,6 +225,7 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                killed=True
 
         #si jamais le personnage touche le méchant, le jeu s'arrête
         if collision_personnage_ennemi():
@@ -234,7 +236,9 @@ def play():
         if cle_obtenue and collision_personnage_porte() :
             run=False
             victory=True
-
+    if killed:
+        thorpy.functions.quit_menu_func()
+        return
     if not victory:
         restart()
     else:
